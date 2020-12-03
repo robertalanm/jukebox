@@ -6,7 +6,7 @@ from einops import rearrange, repeat
 from functools import partial
 
 from local_attention import LocalAttention
-from reversible import ReversibleSequence, SequentialSequence
+from jukebox.transformer.reversible import ReversibleSequence, SequentialSequence
 
 # helpers
 

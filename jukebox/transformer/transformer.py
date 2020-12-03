@@ -6,7 +6,7 @@ import jukebox.utils.dist_adapter as dist
 
 from jukebox.transformer.ops import Conv1D, ACT_FNS, LayerNorm
 from jukebox.transformer.factored_attention import FactoredAttention
-from performer import FastAttention
+from jukebox.transformer.performer import FastAttention
 from jukebox.utils.checkpoint import checkpoint
 
 def _convert_mlp_traced(l):
