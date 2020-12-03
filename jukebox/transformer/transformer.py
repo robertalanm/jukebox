@@ -6,6 +6,7 @@ import jukebox.utils.dist_adapter as dist
 
 from jukebox.transformer.ops import Conv1D, ACT_FNS, LayerNorm
 from jukebox.transformer.factored_attention import FactoredAttention
+from performer import FastAttention
 from jukebox.utils.checkpoint import checkpoint
 
 def _convert_mlp_traced(l):
@@ -39,13 +40,18 @@ class ResAttnBlock(nn.Module):
                  attn_func=0, blocks=None, spread=None,
                  encoder_dims=None, prime_len=None):
         super().__init__()
-        self.attn = FactoredAttention(n_in=n_in, n_ctx=n_ctx, n_state=int(m_attn * n_in), n_head=n_head,
-                                      attn_dropout=attn_dropout, resid_dropout=resid_dropout,
-                                      scale=scale, mask=mask,
-                                      zero_out=zero_out, init_scale=init_scale,
-                                      checkpoint_attn=checkpoint_attn,
-                                      attn_func=attn_func, blocks=blocks, spread=spread,
-                                      encoder_dims=encoder_dims, prime_len=prime_len)
+        self.attn = FastAttention(
+            dim_heads = 64,
+            nb_features = 256,
+            causal = False
+        )
+        #self.attn = FactoredAttention(n_in=n_in, n_ctx=n_ctx, n_state=int(m_attn * n_in), n_head=n_head,
+        #                              attn_dropout=attn_dropout, resid_dropout=resid_dropout,
+        #                              scale=scale, mask=mask,
+        #                              zero_out=zero_out, init_scale=init_scale,
+        #                              checkpoint_attn=checkpoint_attn,
+        #                              attn_func=attn_func, blocks=blocks, spread=spread,
+        #                              encoder_dims=encoder_dims, prime_len=prime_len)
         self.ln_0 = LayerNorm(n_in)
         self.mlp = MLP(n_in=n_in, n_state=int(m_mlp * n_in),
                        resid_dropout=resid_dropout,
